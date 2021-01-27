@@ -9,7 +9,7 @@ const criarNovaLinha = ( nome , email ) => {
             <li><button class="botao-simples botao-simples--excluir">Excluir</button></li>
         </ul>
     </td>` ;
-    novaLinha.innerHTML(conteudo);
+    novaLinha.innerHTML = conteudo;
     return novaLinha;
 }
 
@@ -22,12 +22,20 @@ const listaClientes = () => {
         http.send();
         
         http.onload = () => {
-            const data = JSON.parse( http.response );
-            data.forEach( elemento => {
-                const novaLinha = criarNovaLinha( elemento.nome , elemento.email );
-            });
-            tabela.appendChild(novaLinha);
+            if(http.status >= 400 ){
+                reject(JSON.parse(http.response));
+            }else{
+                resolve(JSON.parse(http.response));
+            }
         }        
-    }) 
+    }); 
+    console.log(`Promise: ${promise}`);
     return promise;
 }
+
+listaClientes().then( data => {
+    data.forEach( elemento => {
+        const novaLinha = criarNovaLinha( elemento.nome , elemento.email );
+        tabela.appendChild(novaLinha);    
+    });
+});
