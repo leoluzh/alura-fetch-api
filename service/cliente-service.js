@@ -14,14 +14,20 @@ const criarNovaLinha = ( nome , email ) => {
 }
 
 const tabela = document.querySelector('[data-tabela]');
-const http = new XMLHttpRequest();
-http.open("GET","http://localhost:3000/profile");
-http.send();
 
-http.onload = () => {
-    const data = JSON.parse( http.response );
-    data.forEach( elemento => {
-        const novaLinha = criarNovaLinha( elemento.nome , elemento.email );
-    });
-    tabela.appendChild(novaLinha);
+const listaClientes = () => {
+    const promise = new Promise( ( resolve , reject )  => {
+        const http = new XMLHttpRequest();
+        http.open("GET","http://localhost:3000/profile");
+        http.send();
+        
+        http.onload = () => {
+            const data = JSON.parse( http.response );
+            data.forEach( elemento => {
+                const novaLinha = criarNovaLinha( elemento.nome , elemento.email );
+            });
+            tabela.appendChild(novaLinha);
+        }        
+    }) 
+    return promise;
 }
